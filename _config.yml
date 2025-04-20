@@ -1,0 +1,16 @@
+title: 我的个人网站
+description: 摄影作品 × 博客 × 项目展示
+theme: minima            # Jekyll 官方自带的简单主题
+markdown: kramdown
+url: "https://<你的用户名>.github.io"
+
+# 顶部导航
+nav:
+  - name: 首页
+    link: /
+  - name: 关于我
+    link: /about.html
+  - name: 摄影集
+    link: /photos.html
+  - name: 项目
+    link: /projects.html
