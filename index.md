@@ -1,8 +1,6 @@
 ---
-layout: default
-title: 我的个人摄影集
+layout: home
+author_profile: true
 ---
 
-# 欢迎来到我的网站
-
-这里是我的个人摄影集、博客和项目展示。
+<p>This text should appear above the recent posts.</p>
