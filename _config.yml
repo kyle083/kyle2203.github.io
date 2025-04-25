@@ -1,6 +1,6 @@
 title: 我的个人网站
 description: 摄影作品 × 博客 × 项目展示
-theme: minimal-mistakes        # Jekyll 官方自带的简单主题
+theme: minimal-mistakes-jekyll
 markdown: kramdown
 url: "https://kyle2203.github.io"
 
