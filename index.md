@@ -1,6 +1,6 @@
 ---
 layout: default
-title: 我的个人摄影集
+title: 主页
 ---
 
 # 欢迎来到我的网站
