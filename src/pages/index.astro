@@ -1,0 +1,130 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation';
+import Footer from '../components/Footer.astro';
+import TypewriterHero from '../components/TypewriterHero';
+import PostCard from '../components/PostCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { getFeaturedPosts, getFeaturedProjects } from '../utils/content';
+
+const featuredPosts = await getFeaturedPosts(6);
+const featuredProjects = await getFeaturedProjects(4);
+
+const techStack = [
+  { name: 'Python', desc: 'AI & 量化主力语言' },
+  { name: 'PyTorch', desc: '深度学习框架' },
+  { name: 'Pandas', desc: '数据分析处理' },
+  { name: 'Backtrader', desc: '量化回测引擎' },
+];
+---
+
+<BaseLayout title="Kyle - AI开发 × 量化交易">
+  <Navigation client:load />
+  
+  <main class="pt-16">
+    <TypewriterHero client:load />
+
+    {/* Stats Section */}
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {[
+          { label: 'AI 文章', value: '12+' },
+          { label: '量化策略', value: '8+' },
+          { label: '开源项目', value: '5+' },
+          { label: '学习天数', value: '400+' },
+        ].map((stat) => (
+          <div class="p-6 rounded-2xl bg-white/[0.03] border border-white/[0.08] text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-3"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <div class="text-2xl font-bold text-slate-50 mb-1">{stat.value}</div>
+            <div class="text-xs text-slate-500">{stat.label}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    {/* Featured Posts */}
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-2xl font-bold text-slate-50 mb-1">最新文章</h2>
+          <p class="text-sm text-slate-500">探索 AI 与量化的知识边界</p>
+        </div>
+        <a href="/blog" class="inline-flex items-center gap-1 text-sm text-violet-400 hover:text-violet-300 transition-colors">
+          查看全部 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {featuredPosts.length > 0 ? (
+          featuredPosts.map((post) => (
+            <PostCard
+              title={post.data.title}
+              description={post.data.description}
+              pubDate={post.data.pubDate}
+              category={post.data.category}
+              tags={post.data.tags}
+              slug={post.id}
+            />
+          ))
+        ) : (
+          <div class="col-span-full text-center py-16 text-slate-500">
+            文章正在整理中，敬请期待...
+          </div>
+        )}
+      </div>
+    </section>
+
+    {/* Featured Projects */}
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-2xl font-bold text-slate-50 mb-1">精选项目</h2>
+          <p class="text-sm text-slate-500">动手实践是最好的学习方式</p>
+        </div>
+        <a href="/projects" class="inline-flex items-center gap-1 text-sm text-violet-400 hover:text-violet-300 transition-colors">
+          查看全部 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {featuredProjects.length > 0 ? (
+          featuredProjects.map((project) => (
+            <ProjectCard
+              title={project.data.title}
+              description={project.data.description}
+              category={project.data.category}
+              tags={project.data.tags}
+              github={project.data.github}
+              demo={project.data.demo}
+              slug={project.id}
+            />
+          ))
+        ) : (
+          <div class="col-span-full text-center py-16 text-slate-500">
+            项目正在整理中，敬请期待...
+          </div>
+        )}
+      </div>
+    </section>
+
+    {/* Tech Stack */}
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div class="text-center mb-10">
+        <h2 class="text-2xl font-bold text-slate-50 mb-2">技术栈</h2>
+        <p class="text-sm text-slate-500">构建智能与数据驱动的工具链</p>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {techStack.map((tech) => (
+          <div class="p-6 rounded-2xl bg-white/[0.03] border border-white/[0.08] text-center hover:bg-white/[0.06] transition-all group">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8888a0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-3 group-hover:stroke-violet-400 transition-colors"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            <div class="text-sm font-medium text-slate-50 mb-1">{tech.name}</div>
+            <div class="text-xs text-slate-500">{tech.desc}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

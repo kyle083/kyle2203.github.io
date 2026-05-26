@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation';
+import Footer from '../components/Footer.astro';
+import PostCard from '../components/PostCard.astro';
+import BacktestChart from '../components/charts/BacktestChart';
+import { getPostsByCategory } from '../utils/content';
+
+const posts = await getPostsByCategory('quant');
+---
+
+<BaseLayout title="量化交易 - Kyle">
+  <Navigation client:load />
+  
+  <main class="pt-24 pb-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Header */}
+      <div class="mb-12">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-sm mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>
+          Quantitative Trading
+        </div>
+        <h1 class="text-4xl font-bold text-slate-50 mb-4">量化交易</h1>
+        <p class="text-slate-400 max-w-2xl leading-relaxed">
+          系统性记录量化交易策略的研究与实盘经验，涵盖技术分析、因子挖掘、回测优化与风险管理。
+          用数据和代码探索市场规律。
+        </p>
+      </div>
+
+      {/* Demo Chart */}
+      <div class="mb-12">
+        <BacktestChart client:load />
+      </div>
+
+      {/* Category Tags */}
+      <div class="flex flex-wrap gap-2 mb-8">
+        {['全部', '策略研究', '回测分析', '交易日志', '风险管理'].map((tag, i) => (
+          <span class={`px-3 py-1.5 rounded-lg text-sm ${i === 0 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-white/5 text-slate-400 border border-white/5'}`}>
+            {tag}
+          </span>
+        ))}
+      </div>
+
+      {/* Posts Grid */}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {posts.length > 0 ? (
+          posts.map((post) => (
+            <PostCard
+              title={post.data.title}
+              description={post.data.description}
+              pubDate={post.data.pubDate}
+              category={post.data.category}
+              tags={post.data.tags}
+              slug={post.id}
+            />
+          ))
+        ) : (
+          <div class="col-span-full">
+            <div class="flex flex-col items-center justify-center py-24 text-slate-500">
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mb-4 opacity-50"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+              <p class="text-lg mb-2">策略库正在建设中</p>
+              <p class="text-sm">量化交易学习笔记即将上线，敬请期待...</p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

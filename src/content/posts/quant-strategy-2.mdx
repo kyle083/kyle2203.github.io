@@ -1,0 +1,87 @@
+---
+title: 'Python 量化数据获取：AKShare 实战'
+description: '无需付费 API，使用 AKShare 免费获取 A 股历史数据、实时行情和财务指标。'
+pubDate: 2025-01-28
+category: 'quant'
+tags: ['AKShare', '数据采集', 'A股', 'Python']
+featured: true
+---
+
+## 为什么选择 AKShare
+
+对于个人量化研究者来说，数据成本是一大障碍。AKShare 基于东方财富、新浪财经等公开数据源，提供了免费的金融数据接口。
+
+## 安装与基础使用
+
+```bash
+pip install akshare
+```
+
+获取 A 股历史行情：
+
+```python
+import akshare as ak
+
+# 获取个股历史数据
+df = ak.stock_zh_a_hist(
+    symbol="600519",  # 贵州茅台
+    period="daily",
+    start_date="20240101",
+    end_date="20241231",
+    adjust="qfq"  # 前复权
+)
+
+print(df.head())
+```
+
+## 常用数据接口
+
+### 1. 实时行情
+
+```python
+# 全部 A 股实时行情
+stock_df = ak.stock_zh_a_spot_em()
+```
+
+### 2. 指数数据
+
+```python
+# 沪深 300 历史数据
+index_df = ak.index_zh_a_hist(
+    symbol="000300",
+    period="daily"
+)
+```
+
+### 3. 财务数据
+
+```python
+# 股票财务指标
+fin_df = ak.stock_financial_report_sina(
+    stock="600519",
+    symbol="lrb"  # 利润表
+)
+```
+
+## 数据处理技巧
+
+```python
+import pandas as pd
+
+# 计算收益率
+df['return'] = df['收盘'].pct_change()
+
+# 计算移动平均线
+df['ma20'] = df['收盘'].rolling(window=20).mean()
+
+# 保存到本地
+df.to_csv('600519.csv', index=False)
+```
+
+## 注意事项
+
+- 频率限制：不要过于频繁请求，避免被封 IP
+- 数据质量：建议使用前做数据清洗和校验
+- 实时性：部分接口数据有 15 分钟延迟
+
+AKShare 是个人量化入门的绝佳工具，配合 pandas 和 Backtrader 可以快速搭建完整的研究 pipeline。

@@ -1,0 +1,27 @@
+---
+title: '个人知识库问答助手'
+description: '基于 RAG 架构的本地知识库问答系统，支持 Markdown 文档导入和语义检索，使用 LangChain + Ollama 实现。'
+pubDate: 2025-04-01
+category: 'ai'
+tags: ['RAG', 'LangChain', 'Ollama', '向量数据库']
+github: 'https://github.com/kyle2203/rag-assistant'
+featured: true
+---
+
+## 项目概述
+
+一个完全本地运行的知识库问答系统，无需联网即可对个人笔记、论文、文档进行语义检索和问答。
+
+## 技术栈
+
+- **LangChain**: 编排 RAG Pipeline
+- **Ollama**: 本地运行 LLM（支持 Llama2、Mistral 等）
+- **ChromaDB**: 向量数据库存储文档嵌入
+- **Sentence-Transformers**: 文本向量化
+
+## 核心特性
+
+1. 支持 Markdown、PDF、TXT 格式导入
+2. 分块策略可配置（固定长度/语义分块）
+3. 多轮对话支持上下文记忆
+4. 完全本地化，数据隐私有保障

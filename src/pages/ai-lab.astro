@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation';
+import Footer from '../components/Footer.astro';
+import PostCard from '../components/PostCard.astro';
+import { getPostsByCategory } from '../utils/content';
+
+const posts = await getPostsByCategory('ai');
+---
+
+<BaseLayout title="AI实验室 - Kyle">
+  <Navigation client:load />
+  
+  <main class="pt-24 pb-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Header */}
+      <div class="mb-12">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-300 text-sm mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M9 13a4.5 4.5 0 0 0 3-4"/><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"/><path d="M3.477 10.896a4 4 0 0 1 .585-.396"/><path d="M6 18a4 4 0 0 1-1.967-.516"/><path d="M12 13h4"/><path d="M12 18h6a2 2 0 0 1 2 2v1"/><path d="M12 8h8"/><path d="M16 8V5a2 2 0 0 1 2-2"/><circle cx="16" cy="13" r=".5"/><circle cx="18" cy="3" r=".5"/><circle cx="20" cy="21" r=".5"/><circle cx="20" cy="8" r=".5"/></svg>
+          AI Laboratory
+        </div>
+        <h1 class="text-4xl font-bold text-slate-50 mb-4">AI 实验室</h1>
+        <p class="text-slate-400 max-w-2xl leading-relaxed">
+          记录人工智能领域的学习与实践，包括论文复现、模型实验、工具链探索等。
+          从深度学习到大型语言模型，持续追踪 AI 前沿。
+        </p>
+      </div>
+
+      {/* Category Tags */}
+      <div class="flex flex-wrap gap-2 mb-8">
+        {['全部', '论文复现', '模型实验', '工具链', 'LLM应用'].map((tag, i) => (
+          <span class={`px-3 py-1.5 rounded-lg text-sm ${i === 0 ? 'bg-violet-500/20 text-violet-300 border border-violet-500/30' : 'bg-white/5 text-slate-400 border border-white/5'}`}>
+            {tag}
+          </span>
+        ))}
+      </div>
+
+      {/* Posts Grid */}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {posts.length > 0 ? (
+          posts.map((post) => (
+            <PostCard
+              title={post.data.title}
+              description={post.data.description}
+              pubDate={post.data.pubDate}
+              category={post.data.category}
+              tags={post.data.tags}
+              slug={post.id}
+            />
+          ))
+        ) : (
+          <div class="col-span-full">
+            <div class="flex flex-col items-center justify-center py-24 text-slate-500">
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mb-4 opacity-50"><path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/><path d="M5.52 16h12.96"/></svg>
+              <p class="text-lg mb-2">实验室正在筹备中</p>
+              <p class="text-sm">AI 学习笔记即将上线，敬请期待...</p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

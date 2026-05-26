@@ -1,0 +1,64 @@
+---
+title: '从零开始：我的 PyTorch 学习路线图'
+description: '记录从神经网络基础到实际模型训练的完整学习路径，包含关键知识点和踩坑经验。'
+pubDate: 2025-03-15
+category: 'ai'
+tags: ['PyTorch', '深度学习', '学习笔记']
+featured: true
+---
+
+## 为什么选择 PyTorch
+
+PyTorch 以其动态计算图和直观的 Python 风格 API 成为我入门深度学习的首选框架。相比于 TensorFlow 的静态图模式，PyTorch 的调试体验更加友好。
+
+## 学习路径
+
+### 第一阶段：基础概念
+
+1. **张量（Tensor）操作**
+   - 创建、索引、切片
+   - 形状变换（view, reshape, permute）
+   - 广播机制
+
+2. **自动求导（Autograd）**
+   - `requires_grad` 和 `backward()`
+   - 计算图的理解
+   - 梯度清零的重要性
+
+```python
+import torch
+
+x = torch.tensor([2.0, 3.0], requires_grad=True)
+y = x ** 2 + 2 * x + 1
+y.sum().backward()
+print(x.grad)  # tensor([6., 8.])
+```
+
+### 第二阶段：构建模型
+
+使用 `nn.Module` 定义网络结构：
+
+```python
+import torch.nn as nn
+
+class SimpleNet(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(784, 256)
+        self.fc2 = nn.Linear(256, 10)
+        self.relu = nn.ReLU()
+    
+    def forward(self, x):
+        x = self.relu(self.fc1(x))
+        return self.fc2(x)
+```
+
+## 踩坑记录
+
+- **忘记 `optimizer.zero_grad()`**：导致梯度累积，损失爆炸
+- **数据维度不匹配**：善用 `print(tensor.shape)` 调试
+- **GPU 张量与 CPU 张量混用**：统一 `.to(device)`
+
+## 下一步
+
+继续学习 CNN 和 RNN，然后尝试复现经典论文。

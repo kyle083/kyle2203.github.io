@@ -1,0 +1,75 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navigation from '../../components/Navigation';
+import Footer from '../../components/Footer.astro';
+import { formatDate } from '../../utils/content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const categoryConfig = {
+  ai: { label: 'AI', color: 'from-violet-500/20 to-blue-500/20 text-violet-300 border-violet-500/30' },
+  quant: { label: '量化', color: 'from-emerald-500/20 to-amber-500/20 text-emerald-300 border-emerald-500/30' },
+  other: { label: '其他', color: 'from-slate-500/20 to-slate-400/20 text-slate-300 border-slate-500/30' },
+};
+
+const config = categoryConfig[post.data.category];
+---
+
+<BaseLayout title={`${post.data.title} - Kyle`} description={post.data.description}>
+  <Navigation client:load />
+  
+  <main class="pt-24 pb-16">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <a
+        href="/blog"
+        class="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-300 transition-colors mb-8"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+        返回博客
+      </a>
+
+      <article>
+        <header class="mb-10">
+          <div class="flex items-center gap-3 mb-4">
+            <span class={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gradient-to-r ${config.color} border`}>
+              {config.label}
+            </span>
+            <time class="text-sm text-slate-500">{formatDate(post.data.pubDate)}</time>
+          </div>
+          
+          <h1 class="text-3xl sm:text-4xl font-bold text-slate-50 mb-4 leading-tight">
+            {post.data.title}
+          </h1>
+          
+          <p class="text-lg text-slate-400 leading-relaxed">
+            {post.data.description}
+          </p>
+          
+          <div class="flex flex-wrap gap-2 mt-4">
+            {post.data.tags.map((tag: string) => (
+              <span class="px-2 py-0.5 rounded-md bg-white/5 text-xs text-slate-500">
+                #{tag}
+              </span>
+            ))}
+          </div>
+        </header>
+
+        <div class="prose prose-invert max-w-none">
+          <Content />
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
