@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 
 const roles = ['AI 开发者', '量化交易员', '终身学习者'];
 
@@ -37,57 +36,51 @@ export default function TypewriterHero() {
       <div className="absolute inset-0 bg-gradient-to-b from-violet-500/5 via-transparent to-emerald-500/5" />
       
       <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 1, y: 0 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+        {/* Badge */}
+        <div
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-slate-400 mb-8 hero-fade-in"
+          style={{ animationDelay: '0.1s' }}
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-slate-400 mb-8">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            欢迎来到我的数字空间
-          </div>
-        </motion.div>
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          欢迎来到我的数字空间
+        </div>
 
-        <motion.h1
-          initial={{ opacity: 1, y: 0 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-5xl sm:text-7xl font-bold tracking-tight mb-6"
+        {/* Title */}
+        <h1
+          className="text-5xl sm:text-7xl font-bold tracking-tight mb-6 hero-fade-in"
+          style={{ animationDelay: '0.3s' }}
         >
           <span className="bg-gradient-to-r from-slate-50 via-slate-200 to-slate-400 bg-clip-text text-transparent">
             我是 Kyle
           </span>
-        </motion.h1>
+        </h1>
 
-        <motion.div
-          initial={{ opacity: 1, y: 0 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-2xl sm:text-3xl font-medium mb-8 h-10"
+        {/* Typewriter */}
+        <div
+          className="text-2xl sm:text-3xl font-medium mb-8 h-10 hero-fade-in"
+          style={{ animationDelay: '0.5s' }}
         >
           <span className="text-slate-400">一位</span>
           <span className="bg-gradient-to-r from-violet-400 to-emerald-400 bg-clip-text text-transparent ml-2">
             {displayText}
           </span>
           <span className="inline-block w-0.5 h-7 bg-violet-400 ml-1 animate-pulse align-middle" />
-        </motion.div>
+        </div>
 
-        <motion.p
-          initial={{ opacity: 1, y: 0 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="text-slate-400 text-lg max-w-2xl mx-auto mb-10 leading-relaxed"
+        {/* Description */}
+        <p
+          className="text-slate-400 text-lg max-w-2xl mx-auto mb-10 leading-relaxed hero-fade-in"
+          style={{ animationDelay: '0.7s' }}
         >
           在这里记录我的 AI 开发学习旅程与量化交易策略研究。
           <br />
           探索智能与数据的交汇点，用代码构建对未来的理解。
-        </motion.p>
+        </p>
 
-        <motion.div
-          initial={{ opacity: 1, y: 0 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="flex flex-wrap items-center justify-center gap-4"
+        {/* Buttons */}
+        <div
+          className="flex flex-wrap items-center justify-center gap-4 hero-fade-in"
+          style={{ animationDelay: '0.9s' }}
         >
           <a
             href="/ai-lab"
@@ -101,7 +94,7 @@ export default function TypewriterHero() {
           >
             查看量化策略
           </a>
-        </motion.div>
+        </div>
       </div>
     </div>
   );
