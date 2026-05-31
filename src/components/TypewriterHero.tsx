@@ -83,13 +83,13 @@ export default function TypewriterHero() {
           style={{ animationDelay: '0.9s' }}
         >
           <a
-            href="/ai-lab"
+            href={import.meta.env.BASE_URL + 'ai-lab'}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-violet-600 to-violet-500 text-white font-medium hover:from-violet-500 hover:to-violet-400 transition-all shadow-lg shadow-violet-500/25"
           >
             探索 AI 实验室
           </a>
           <a
-            href="/quant"
+            href={import.meta.env.BASE_URL + 'quant'}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-slate-200 font-medium hover:bg-white/10 transition-all"
           >
             查看量化策略

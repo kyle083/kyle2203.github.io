@@ -49,7 +49,7 @@ const techStack = [
           <h2 class="text-2xl font-bold text-slate-50 mb-1">最新文章</h2>
           <p class="text-sm text-slate-500">探索 AI 与量化的知识边界</p>
         </div>
-        <a href="/blog" class="inline-flex items-center gap-1 text-sm text-violet-400 hover:text-violet-300 transition-colors">
+        <a href={`${import.meta.env.BASE_URL}blog`} class="inline-flex items-center gap-1 text-sm text-violet-400 hover:text-violet-300 transition-colors">
           查看全部 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </a>
       </div>
@@ -81,7 +81,7 @@ const techStack = [
           <h2 class="text-2xl font-bold text-slate-50 mb-1">精选项目</h2>
           <p class="text-sm text-slate-500">动手实践是最好的学习方式</p>
         </div>
-        <a href="/projects" class="inline-flex items-center gap-1 text-sm text-violet-400 hover:text-violet-300 transition-colors">
+        <a href={`${import.meta.env.BASE_URL}projects`} class="inline-flex items-center gap-1 text-sm text-violet-400 hover:text-violet-300 transition-colors">
           查看全部 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </a>
       </div>
