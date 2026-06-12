@@ -1,0 +1,137 @@
+---
+title: 'Claude + DeepSeek API 实战：如何组合两个 LLM 构建应用'
+description: '探索如何将 Claude 的推理能力与 DeepSeek 的高性价比 API 结合，实现更稳定、更经济的 LLM 应用开发流程。'
+pubDate: 2025-06-12
+category: 'ai'
+tags:
+  - 'Claude'
+  - 'DeepSeek'
+  - 'API'
+  - 'LLM'
+  - '多模型协作'
+featured: true
+---
+
+## 为什么组合 Claude 和 DeepSeek
+
+在实际开发 LLM 应用时，单一模型往往难以兼顾**推理质量**、**响应速度**和**成本**三个维度：
+
+- **Claude（Anthropic）**：长上下文理解强、指令跟随稳定、适合复杂推理和代码生成
+- **DeepSeek**：API 价格低廉、中文表现优秀、适合高频次调用和初步筛选
+
+将两者组合，可以用 DeepSeek 做第一层的快速处理，再用 Claude 做最终决策或复杂推理，实现性价比最优。
+
+## 典型协作架构
+
+```
+用户输入
+  │
+  ▼
+┌─────────────────┐
+│ DeepSeek API    │  ← 快速分类、摘要、初筛
+│ （低成本）      │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│ 路由/判断逻辑   │  ← 根据任务复杂度决定下一步
+└────────┬────────┘
+         │
+    ┌────┴────┐
+    ▼         ▼
+DeepSeek   Claude
+（简单任务） （复杂任务）
+```
+
+## 代码示例：智能路由
+
+```python
+import os
+from anthropic import Anthropic
+from openai import OpenAI
+
+# Claude 客户端
+claude = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+
+# DeepSeek 客户端（兼容 OpenAI SDK）
+deepseek = OpenAI(
+    api_key=os.getenv("DEEPSEEK_API_KEY"),
+    base_url="https://api.deepseek.com/v1"
+)
+
+def classify_complexity(prompt: str) -> str:
+    """用 DeepSeek 判断任务复杂度"""
+    response = deepseek.chat.completions.create(
+        model="deepseek-chat",
+        messages=[{
+            "role": "system",
+            "content": "判断以下任务是 simple（简单问答/摘要）还是 complex（推理/代码/分析），只返回 simple 或 complex"
+        }, {
+            "role": "user",
+            "content": prompt
+        }]
+    )
+    return response.choices[0].message.content.strip().lower()
+
+def call_deepseek(prompt: str) -> str:
+    response = deepseek.chat.completions.create(
+        model="deepseek-chat",
+        messages=[{"role": "user", "content": prompt}]
+    )
+    return response.choices[0].message.content
+
+def call_claude(prompt: str) -> str:
+    response = claude.messages.create(
+        model="claude-3-5-sonnet-20241022",
+        max_tokens=4096,
+        messages=[{"role": "user", "content": prompt}]
+    )
+    return response.content[0].text
+
+def smart_llm(prompt: str) -> str:
+    complexity = classify_complexity(prompt)
+    print(f"任务复杂度: {complexity}")
+    
+    if complexity == "complex":
+        return call_claude(prompt)
+    else:
+        return call_deepseek(prompt)
+
+# 测试
+result = smart_llm("解释 Python 中的装饰器，并给出一个带参数的装饰器示例")
+print(result)
+```
+
+## 使用场景推荐
+
+| 场景 | 推荐模型 | 原因 |
+|------|---------|------|
+| 文档分类/标签提取 | DeepSeek | 成本低、速度快 |
+| 代码审查/重构 | Claude | 代码理解能力强 |
+| 长文摘要 | DeepSeek | 性价比高 |
+| 复杂推理/多步规划 | Claude | 推理稳定、幻觉少 |
+| 中文对话/客服 | DeepSeek | 中文表现好 |
+| Agent 决策/工具选择 | Claude | 指令跟随精确 |
+
+## 成本对比估算
+
+以处理 1000 条用户请求为例：
+
+- 全部用 Claude 3.5 Sonnet：约 $8-15
+- 全部用 DeepSeek Chat：约 $0.5-2
+- **智能路由组合**：约 $2-5，同时保持复杂任务的高质量
+
+实际节省取决于任务分布，但通常可以降低 **50%-70%** 的成本。
+
+## 注意事项
+
+1. **模型输出格式差异**：Claude 的 SDK 和 DeepSeek（OpenAI 兼容）返回结构不同，需要统一封装
+2. **超时处理**：DeepSeek 在国内访问可能更稳定，Claude 可能需要代理
+3. **Fallback 机制**：当某个模型失败时，自动切换到另一个模型
+4. **缓存复用**：对重复性任务，可以缓存 DeepSeek 的初步结果
+
+## 下一步
+
+- 引入提示词模板管理（如 `jinja2` 或 `langchain`）
+- 添加 Token 用量监控和成本统计
+- 尝试用 DeepSeek-R1 做推理，再用 Claude 做结果润色
