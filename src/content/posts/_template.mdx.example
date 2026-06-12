@@ -1,0 +1,18 @@
+---
+title: '文章标题'
+description: '文章简介，会显示在卡片和 SEO 中'
+pubDate: 2025-01-01
+category: 'ai' # ai | quant | other
+tags:
+  - '标签1'
+  - '标签2'
+featured: false
+---
+
+在这里开始写文章正文。
+
+## 小节标题
+
+支持 Markdown 语法，也可以插入 React 组件：
+
+<MyComponent client:load />

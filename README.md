@@ -38,17 +38,48 @@ git push origin main
 
 ## 添加文章
 
-在 `src/content/posts/` 目录下新建 `.mdx` 文件：
+### 方式一：使用脚本（推荐）
+
+```bash
+npm run new-post
+```
+
+按提示输入标题、分类、标签等信息，脚本会自动生成文件并打开编辑。
+
+### 方式二：手动创建
+
+1. 在 `src/content/posts/` 目录下新建 `.mdx` 文件
+2. 文件名建议：`{category}-{短标题}-{YYYY-MM-DD}.mdx`
+3. 复制 `src/content/posts/_template.mdx.example` 的内容作为起点
+4. 填写 frontmatter 并撰写正文
+
+### Frontmatter 字段说明
 
 ```mdx
 ---
 title: '文章标题'
-description: '文章简介'
-pubDate: 2025-01-01
-category: 'ai'  # ai | quant | other
+description: '文章简介，显示在卡片和 SEO 中'
+pubDate: 2025-01-01       # 发布日期
+category: 'ai'            # ai | quant | other
 tags: ['标签1', '标签2']
-featured: true
+featured: false           # 是否置顶/精选
+cover: '/images/xxx.jpg'  # 可选：封面图路径
 ---
+```
 
-文章内容支持 Markdown 和 JSX 组件...
+### 文章分类
+
+- `ai`：AI 学习笔记、论文复现、模型实验
+- `quant`：量化策略、回测分析、交易日志
+- `other`：技术随笔、工具分享、其他思考
+
+### 预览与发布
+
+```bash
+npm run dev          # 本地预览，访问 /blog
+npm run build        # 构建检查
+
+git add .
+git commit -m "add post: 文章标题"
+git push origin main # GitHub Actions 自动部署
 ```
