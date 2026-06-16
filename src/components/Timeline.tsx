@@ -2,15 +2,15 @@ import { useEffect, useRef, useState } from 'react';
 
 const milestones = [
   {
-    year: '2023',
-    title: '开始 AI 学习之旅',
-    description: '接触机器学习和深度学习，完成吴恩达机器学习课程',
+    year: '2021',
+    title: '进入浙江财经大学',
+    description: '开始攻读数字经济专业，接触数据思维与数字化技术',
     color: 'from-violet-500 to-blue-500',
   },
   {
-    year: '2024',
-    title: '辅修人工智能',
-    description: '在浙江财经大学辅修 AI 专业，系统学习神经网络与计算机视觉',
+    year: '2022',
+    title: '开始学习人工智能',
+    description: '系统学习机器学习、深度学习与神经网络，开启 AI 探索之路',
     color: 'from-blue-500 to-cyan-500',
   },
   {
