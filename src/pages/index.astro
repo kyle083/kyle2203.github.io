@@ -5,10 +5,17 @@ import Footer from '../components/Footer.astro';
 import TypewriterHero from '../components/TypewriterHero';
 import PostCard from '../components/PostCard.astro';
 import ProjectCard from '../components/ProjectCard.astro';
-import { getFeaturedPosts, getFeaturedProjects } from '../utils/content';
+import { getFeaturedPosts, getFeaturedProjects, getPosts, getProjects } from '../utils/content';
 
 const featuredPosts = await getFeaturedPosts(6);
 const featuredProjects = await getFeaturedProjects(4);
+const allPosts = await getPosts();
+const allProjects = await getProjects();
+
+const aiPosts = allPosts.filter(p => p.data.category === 'ai').length;
+const quantPosts = allPosts.filter(p => p.data.category === 'quant').length;
+const totalPosts = allPosts.length;
+const totalProjects = allProjects.length;
 
 const techStack = [
   { name: 'Python', desc: 'AI & 量化主力语言' },
@@ -28,10 +35,10 @@ const techStack = [
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: 'AI 文章', value: '12+' },
-          { label: '量化策略', value: '8+' },
-          { label: '开源项目', value: '5+' },
-          { label: '学习天数', value: '400+' },
+          { label: 'AI 文章', value: String(aiPosts) },
+          { label: '量化策略', value: String(quantPosts) },
+          { label: '开源项目', value: String(totalProjects) },
+          { label: '累计文章', value: String(totalPosts) },
         ].map((stat) => (
           <div class="p-6 rounded-2xl bg-white/[0.03] border border-white/[0.08] text-center">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-3"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
