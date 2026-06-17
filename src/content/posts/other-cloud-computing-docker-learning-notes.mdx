@@ -1,0 +1,204 @@
+---
+title: '云计算与 Docker 容器化学习笔记'
+description: '整理云计算课程中学习 Linux、SSH、Docker 基础、Dockerfile 编写以及 Node.js + MongoDB Web 应用容器化部署的核心知识与实践经验。'
+pubDate: 2025-06-17
+category: 'other'
+tags:
+  - '云计算'
+  - 'Docker'
+  - 'Linux'
+  - '容器化'
+  - '学习笔记'
+featured: false
+---
+
+## 学习背景
+
+这学期云计算课程从 Linux 虚拟机配置开始，逐步深入到 Docker 容器化部署，最终完成一个基于 Node.js + MongoDB 的 Web 应用容器化项目。本文把零散的知识点串成一条线，方便日后复习和查阅。
+
+## 一、Linux 虚拟机与网络配置
+
+### 1. 环境搭建
+
+- 使用 VirtualBox 安装 Ubuntu 虚拟机
+- 配置：内存 4GB、动态分配磁盘、至少 20G 存储
+- 用户名：`kyleuser`，密码：`wangkai`
+
+### 2. 网络模式理解
+
+四层网络模型：应用层 → 路由层（NAT）→ 交换层 → 物理传输层。
+
+默认 NAT 模式下：
+- 宿主机无法直接访问虚拟机
+- 虚拟机可以访问外网和宿主机
+
+为了让宿主机也能访问虚拟机，需要将网络改为**桥接模式**，并配置 `/etc/netplan` 下的网络配置文件。
+
+### 3. 远程登录
+
+学会用 SSH 远程连接服务器，是后续操作 Docker 和部署应用的基础：
+
+```bash
+ssh username@server_ip
+```
+
+也了解了公钥/私钥登录的基本概念。
+
+## 二、Docker 基础
+
+### 1. 为什么用 Docker？
+
+虚拟机太重，容器更轻量。Docker 解决了**环境依赖冲突**问题：开发环境能跑，部署环境不一定能跑，而容器可以把运行环境一起打包。
+
+### 2. 核心概念
+
+| 概念 | 说明 |
+|------|------|
+| Image（镜像） | 应用及其运行环境的只读模板 |
+| Container（容器） | 镜像的运行实例，相互隔离 |
+| Dockerfile | 定义镜像构建步骤的脚本 |
+| Volume（数据卷） | 实现容器数据的持久化和共享 |
+
+### 3. 常用命令
+
+```bash
+# 镜像操作
+docker pull ubuntu              # 拉取镜像
+docker images                   # 查看本地镜像
+docker commit 容器名 镜像名:tag  # 容器保存为镜像
+docker save -o 文件名 镜像名     # 镜像导出为文件
+docker load -i 文件名           # 文件导入为镜像
+
+# 容器操作
+docker run -it ubuntu           # 交互模式启动容器
+docker ps                       # 查看运行中的容器
+docker ps -a                    # 查看所有容器
+docker exec -it 容器名 /bin/bash # 进入运行中的容器
+docker stop 容器名              # 停止容器
+docker rm 容器名                # 删除容器
+docker inspect 容器名           # 查看容器详细信息
+
+# 网络与端口
+docker run -p 宿主机端口:容器端口 镜像名   # 端口映射
+```
+
+## 三、Dockerfile 构建镜像
+
+Dockerfile 是容器化的核心。通过一系列指令定义镜像的构建过程：
+
+| 指令 | 作用 |
+|------|------|
+| FROM | 指定基础镜像 |
+| LABEL | 添加镜像元数据（如作者） |
+| ENV | 设置环境变量 |
+| RUN | 构建时执行命令 |
+| ADD / COPY | 拷贝文件到镜像中 |
+| WORKDIR | 设置工作目录 |
+| EXPOSE | 声明容器暴露的端口 |
+| VOLUME | 声明挂载点 |
+| CMD | 容器启动时默认执行的命令 |
+
+### 一个 Web 应用的 Dockerfile 示例
+
+```dockerfile
+FROM ubuntu
+LABEL Author=kai
+ADD node-v18.18.2-linux-x64 /root/node
+ADD hello-world.js /root
+ENV PATH=/root/node/bin:$PATH
+EXPOSE 3000
+WORKDIR /root
+CMD ["node", "hello-world.js"]
+```
+
+构建并运行：
+
+```bash
+docker build -t myweb:v1 .
+docker run -p 2000:3000 -d myweb:v1
+```
+
+## 四、数据持久化：Volume
+
+容器关闭后内部数据会丢失，因此需要把数据目录映射到宿主机或 Docker Volume。
+
+```bash
+# 使用命名卷
+docker volume create my-data
+docker run -v my-data:/root/dataPath myweb:v1
+
+# 直接挂载宿主机目录
+docker run -v ~/data1:/root/dataPath myweb:v1
+```
+
+关键结论：容器生成后挂载 volume 的目录，其内容会被 volume 中的数据覆盖。
+
+## 五、Node.js Web 应用容器化
+
+### 1. 开发无状态应用
+
+用 Node.js 内置 `http` 模块写一个最简单的 Web 服务：
+
+```javascript
+const http = require('node:http');
+const port = 3000;
+
+const server = http.createServer((req, res) => {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'text/plain');
+  res.end('Hello, World! I am Kai.\n');
+});
+
+server.listen(port, () => {
+  console.log(`Server running at port ${port}`);
+});
+```
+
+### 2. 手动容器化流程
+
+早期的实验是手动把环境搬到容器里：
+1. 启动 Ubuntu 容器
+2. 把 node 环境和程序文件拷贝进容器
+3. 配置 PATH 环境变量
+4. 运行程序
+
+后来学会了用 Dockerfile 把这些步骤自动化。
+
+### 3. 带数据库的 Web 应用
+
+最终项目使用了：
+- **Express**：Node.js Web 框架
+- **MongoDB**：NoSQL 数据库
+- **Mongoose**：MongoDB 的 ODM 工具
+
+MongoDB 本身也跑在 Docker 容器里，通过 volume 持久化数据：
+
+```bash
+docker volume create mongo-data
+docker run -p 27017:27017 -v mongo-data:/data/db --name mongodb mongo:4.2.7
+```
+
+Express 应用通过 Mongoose 连接 MongoDB，实现表单数据的接收和存储。
+
+## 六、学习心得
+
+1. **容器化是现代部署的标配**：无论是开发、测试还是生产，Docker 都能保证环境一致性。
+
+2. **Dockerfile 是基础设施即代码的体现**：把构建过程写成脚本，可重复、可追溯、可协作。
+
+3. **数据持久化不可忽视**：很多初学者会忽略 volume，导致容器重启后数据丢失。
+
+4. **从手动到自动是进步**：一开始手动拷贝配置很繁琐，学会 Dockerfile 后效率大幅提升。
+
+5. **理论知识需要动手验证**：网络配置、端口映射、volume 挂载这些概念，只有亲手操作过才能真正理解。
+
+## 七、后续计划
+
+- 学习 Docker Compose，实现多容器一键编排
+- 尝试 Kubernetes，了解容器集群管理
+- 把 Web 应用部署到云服务器（如阿里云 ECS）
+- 学习 CI/CD，实现代码提交后自动构建和部署
+
+## 参考内容
+
+本文整理自课程实验笔记，涵盖 Linux 配置、Docker 基础、Dockerfile 编写、Web 应用开发与 MongoDB 容器化部署等内容。
